@@ -1,0 +1,33 @@
+{
+  "$schema": "https://registry.modelcontextprotocol.io/schema/server.json",
+  "name": "defi-vaults",
+  "namespace": "io.philidor",
+  "display_name": "Philidor DeFi Vault Risk Analytics",
+  "description": "Query DeFi vault risk scores, compare vaults, analyze protocols, and perform due diligence using Philidor's Vector Risk Framework.",
+  "version": "1.0.0",
+  "homepage": "https://app.philidor.io",
+  "repository": "https://github.com/zkoranges/philidor-mcp",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Philidor Labs"
+    }
+  ],
+  "categories": ["finance", "data"],
+  "tags": ["defi", "vaults", "risk", "yield", "ethereum", "crypto"],
+  "tools": [
+    { "name": "search_vaults", "description": "Search and filter DeFi vaults" },
+    { "name": "get_vault", "description": "Get full vault details" },
+    { "name": "get_vault_risk_breakdown", "description": "Detailed risk vector analysis" },
+    { "name": "compare_vaults", "description": "Side-by-side vault comparison" },
+    { "name": "find_safest_vaults", "description": "Find safest vaults for criteria" },
+    { "name": "get_protocol_info", "description": "Protocol security details" },
+    { "name": "get_curator_info", "description": "Curator track record" },
+    { "name": "get_market_overview", "description": "Platform-wide statistics" },
+    { "name": "explain_risk_score", "description": "Explain risk score meaning" }
+  ],
+  "remote": {
+    "transport_type": "streamable-http",
+    "url": "https://mcp.philidor.io/api/mcp"
+  }
+}

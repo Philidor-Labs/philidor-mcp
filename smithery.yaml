@@ -1,0 +1,25 @@
+name: philidor-defi-vaults
+description: DeFi vault risk analytics - search vaults, compare risks, analyze protocols using Philidor's Vector Risk Framework
+version: 1.0.0
+license: MIT
+author: Philidor Labs
+
+runtime: node
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      PHILIDOR_API_URL:
+        type: string
+        default: "https://api.philidor.io"
+        description: "Philidor API base URL"
+  commandFunction:
+    |-
+    (config) => ({
+      command: "npx",
+      args: ["tsx", "src/stdio.ts"],
+      env: {
+        PHILIDOR_API_URL: config.PHILIDOR_API_URL || "https://api.philidor.io"
+      }
+    })
