@@ -1,0 +1,36 @@
+{
+  "name": "philidor-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for DeFi vault risk analytics — search vaults, compare risks, analyze protocols using the Vector Risk Framework",
+  "license": "MIT",
+  "author": "Philidor Labs <philidorlabs@proton.me>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Philidor-Labs/philidor-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "defi",
+    "risk",
+    "vaults",
+    "ethereum",
+    "crypto",
+    "yield",
+    "model-context-protocol"
+  ],
+  "scripts": {
+    "start": "tsx src/stdio.ts",
+    "dev": "tsx watch src/stdio.ts",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

@@ -6,7 +6,7 @@
   "description": "Query DeFi vault risk scores, compare vaults, analyze protocols, and perform due diligence using Philidor's Vector Risk Framework.",
   "version": "1.0.0",
   "homepage": "https://app.philidor.io",
-  "repository": "https://github.com/zkoranges/philidor-mcp",
+  "repository": "https://github.com/Philidor-Labs/philidor-mcp",
   "license": "MIT",
   "authors": [
     {
@@ -14,17 +14,17 @@
     }
   ],
   "categories": ["finance", "data"],
-  "tags": ["defi", "vaults", "risk", "yield", "ethereum", "crypto"],
+  "tags": ["defi", "vaults", "risk", "yield", "ethereum", "crypto", "morpho", "aave", "yearn"],
   "tools": [
-    { "name": "search_vaults", "description": "Search and filter DeFi vaults" },
-    { "name": "get_vault", "description": "Get full vault details" },
-    { "name": "get_vault_risk_breakdown", "description": "Detailed risk vector analysis" },
-    { "name": "compare_vaults", "description": "Side-by-side vault comparison" },
-    { "name": "find_safest_vaults", "description": "Find safest vaults for criteria" },
-    { "name": "get_protocol_info", "description": "Protocol security details" },
-    { "name": "get_curator_info", "description": "Curator track record" },
-    { "name": "get_market_overview", "description": "Platform-wide statistics" },
-    { "name": "explain_risk_score", "description": "Explain risk score meaning" }
+    { "name": "search_vaults", "description": "Search and filter DeFi vaults by chain, protocol, asset, risk tier, TVL" },
+    { "name": "get_vault", "description": "Get full vault details including risk vectors, snapshots, events" },
+    { "name": "get_vault_risk_breakdown", "description": "Detailed risk vector analysis with sub-metrics" },
+    { "name": "compare_vaults", "description": "Side-by-side comparison of 2-3 vaults" },
+    { "name": "find_safest_vaults", "description": "Find top audited vaults sorted by risk score" },
+    { "name": "get_protocol_info", "description": "Protocol details including security history and auditors" },
+    { "name": "get_curator_info", "description": "Curator track record and managed vault performance" },
+    { "name": "get_market_overview", "description": "Platform-wide DeFi vault market statistics" },
+    { "name": "explain_risk_score", "description": "Explain what a risk score means and how it's calculated" }
   ],
   "remote": {
     "transport_type": "streamable-http",
