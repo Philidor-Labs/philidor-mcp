@@ -3,7 +3,7 @@
 ## Tier 1: Awesome Lists & Official Registry
 
 - [x] PR to [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) — Finance & Fintech section — [PR #2280](https://github.com/punkpeye/awesome-mcp-servers/pull/2280)
-- [ ] PR to [wong2/awesome-mcp-servers](https://github.com/wong2/awesome-mcp-servers) — similar list, separate maintainer
+- [x] ~~PR to [wong2/awesome-mcp-servers](https://github.com/wong2/awesome-mcp-servers)~~ — does NOT accept PRs, redirects to mcpservers.org
 - [ ] Official MCP Registry (`registry.modelcontextprotocol.io`) — requires DNS TXT record on `philidor.io` with Ed25519 key + `mcp-publisher` CLI. Unlocks `io.philidor/defi-vaults` namespace. Auto-syncs to PulseMCP.
   - Install: `curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher`
   - Generate key: `openssl genpkey -algorithm Ed25519 -out key.pem`
@@ -50,14 +50,14 @@
 - [ ] Record a demo GIF/video using [VHS](https://github.com/charmbracelet/vhs) or screen recording — show a Claude conversation using Philidor tools
 - [ ] Add demo GIF to README hero section
 - [ ] Write a blog post on philidor.io: "Introducing the Philidor MCP Server"
-- [ ] Create a `.well-known/mcp/server-card.json` on `mcp.philidor.io` for auto-discovery by crawlers
+- [x] Create a `.well-known/mcp/server-card.json` on `mcp.philidor.io` for auto-discovery by crawlers
 
 ## Tier 5: Integrations & Partnerships
 
 - [ ] Reach out to [Claude MCP marketplace](https://claude.ai) team about featuring
 - [ ] Contact Cursor team about featuring in their MCP gallery
 - [ ] Contact Windsurf team about featuring in their MCP directory
-- [ ] Explore npm publish (`npx philidor-mcp`) for one-command stdio install
+- [x] npm package ready (`npx philidor-mcp`) — bin/cli.mjs entry point, package.json configured. Run `npm publish` to go live.
 - [ ] GitHub Actions workflow for auto-publish to Official MCP Registry on tag push
 
 ## Repo Hygiene (Ongoing)
@@ -72,4 +72,4 @@
 - [x] server.json for Official MCP Registry
 - [ ] Add GitHub social preview image (1280x640 OG image)
 - [ ] Star the repo from personal accounts to seed initial stars
-- [ ] Create a GitHub Release (v1.0.0) with changelog
+- [x] GitHub Release [v1.0.0](https://github.com/Philidor-Labs/philidor-mcp/releases/tag/v1.0.0) created with changelog
