@@ -19,18 +19,28 @@
     "yield",
     "model-context-protocol"
   ],
+  "type": "module",
+  "bin": {
+    "philidor-mcp": "bin/cli.mjs"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "tsconfig.json"
+  ],
   "scripts": {
     "start": "tsx src/stdio.ts",
     "dev": "tsx watch src/stdio.ts",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "tsx": "^4.21.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
