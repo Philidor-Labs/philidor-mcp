@@ -333,3 +333,4 @@ PHILIDOR_API_URL=http://localhost:3003 npm start
 ## License
 
 [MIT](LICENSE)
+[![MCP Badge](https://lobehub.com/badge/mcp/philidor-labs-philidor-mcp)](https://lobehub.com/mcp/philidor-labs-philidor-mcp)
