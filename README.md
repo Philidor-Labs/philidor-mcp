@@ -8,6 +8,7 @@
 [![MCP](https://img.shields.io/badge/MCP-Compatible-8A2BE2)](https://modelcontextprotocol.io)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org)
 [![Hosted](https://img.shields.io/badge/Hosted-mcp.philidor.io-green.svg)](https://mcp.philidor.io)
+[![smithery badge](https://smithery.ai/badge/philidor/defi)](https://smithery.ai/servers/philidor/defi)
 
 Search 700+ vaults across Morpho, Aave, Yearn, Beefy, Spark, and more. Compare risk scores, analyze protocols, run due diligence &mdash; all through natural language.
 
