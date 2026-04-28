@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/philidor-labs-philidor-mcp-badge.png)](https://mseep.ai/app/philidor-labs-philidor-mcp)
+
 <div align="center">
 
 # Philidor MCP Server
