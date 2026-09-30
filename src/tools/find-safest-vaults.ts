@@ -6,10 +6,13 @@ import { formatVaultSummary } from '../lib/formatters';
 export function registerFindSafestVaults(server: McpServer) {
   server.tool(
     'find_safest_vaults',
-    'Find the safest (highest risk-scored) DeFi vaults, optionally filtered by asset, chain, or minimum TVL. Returns top 10 audited, high-confidence vaults sorted by risk score.',
+    'Find the highest risk-scored DeFi vaults, optionally filtered by asset, chain, or minimum TVL. Returns the top 10 audited vaults sorted by Philidor risk score (higher = lower assessed risk; scores are not a safety guarantee).',
     {
       asset: z.string().optional().describe('Filter by asset symbol (e.g. USDC, WETH)'),
-      chain: z.string().optional().describe('Filter by chain name (e.g. Ethereum, Base)'),
+      chain: z
+        .string()
+        .optional()
+        .describe('Filter by chain name or slug (e.g. Ethereum, Base, Arbitrum, Solana)'),
       minTvl: z.number().optional().describe('Minimum TVL in USD'),
     },
     async (params) => {

@@ -11,8 +11,16 @@ export function registerCompareVaults(server: McpServer) {
       vaults: z
         .array(
           z.object({
-            network: z.string().describe('Network slug (e.g. ethereum, base)'),
-            address: z.string().describe('Vault contract address (0x...)'),
+            network: z
+              .string()
+              .describe(
+                'Network slug from the chain registry (e.g. ethereum, base, arbitrum, solana). /v1/chains lists slugs for chains with active vaults.'
+              ),
+            address: z
+              .string()
+              .describe(
+                "Vault address in the chain's namespace: 0x-hex on EVM chains, base58 (case-sensitive) on Solana"
+              ),
           })
         )
         .min(2)
