@@ -9,7 +9,10 @@ export function registerDefiYieldComparison(server: McpServer) {
     'Compare DeFi yield opportunities across vaults, filtered by asset, chain, or risk tier.',
     {
       asset: z.string().optional().describe('Filter by asset symbol (e.g. USDC, WETH)'),
-      chain: z.string().optional().describe('Filter by chain name (e.g. Ethereum, Base)'),
+      chain: z
+        .string()
+        .optional()
+        .describe('Filter by chain name or slug (e.g. Ethereum, Base, Arbitrum, Solana)'),
       riskTier: z.string().optional().describe('Filter by risk tier: Prime, Core, or Edge'),
     },
     async (args) => {
@@ -24,10 +27,7 @@ export function registerDefiYieldComparison(server: McpServer) {
       });
 
       const result = await apiGet<{ data: any[]; meta: any }>(`/v1/vaults${qs}`);
-      const vaults = result.data.filter((v) => {
-        const apr = parseFloat(v.apr_net);
-        return isNaN(apr) || apr <= 1.0;
-      });
+      const vaults = result.data;
 
       const vaultSummaries = vaults.map((v, i) => `**#${i + 1}**\n${formatVaultSummary(v)}`);
 
@@ -50,11 +50,13 @@ export function registerDefiYieldComparison(server: McpServer) {
 
 Analyze the following:
 
-1. **Yield Ranking**: Which vaults offer the best APR? Is the yield sustainable or likely promotional?
-2. **Risk-Adjusted Returns**: Which vaults offer the best yield relative to their risk score?
-3. **Safety Trade-offs**: What yield premium do riskier vaults command? Is it worth it?
-4. **Top Picks**: Recommend the best vault for (a) a conservative investor, (b) a balanced investor, and (c) a yield-maximizing investor.
-5. **Key Differences**: What are the main differentiators between these vaults?
+1. **Yield Ranking**: vaults sorted by APR from the tool results
+2. **Yield vs Risk Score**: APR next to composite risk score and tier
+3. **Safety Trade-offs**: what is given up for higher yield
+4. **Yield Bands**: conservative, balanced, and yield-maximizing categories based on returned scores
+5. **Key Differences**: observed metric differences across the band
+
+Do not invent risk numbers. Keep base yield and rewards separate when both are present. Note closed or unknown deposits.
 
 Vaults sorted by APR (highest first):
 

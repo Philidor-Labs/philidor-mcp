@@ -1,33 +1,17 @@
 {
-  "$schema": "https://registry.modelcontextprotocol.io/schema/server.json",
-  "name": "defi-vaults",
-  "namespace": "io.philidor",
-  "display_name": "Philidor DeFi Vault Risk Analytics",
-  "description": "Query DeFi vault risk scores, compare vaults, analyze protocols, and perform due diligence using Philidor's Vector Risk Framework.",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.philidor/defi-vaults",
+  "title": "Philidor DeFi Vault Risk Analytics",
+  "description": "Search 700+ DeFi vaults, compare risk scores, analyze protocols. No API key needed.",
   "version": "1.0.0",
-  "homepage": "https://app.philidor.io",
-  "repository": "https://github.com/Philidor-Labs/philidor-mcp",
-  "license": "MIT",
-  "authors": [
+  "repository": {
+    "url": "https://github.com/Philidor-Labs/philidor-mcp",
+    "source": "github"
+  },
+  "remotes": [
     {
-      "name": "Philidor Labs"
+      "type": "streamable-http",
+      "url": "https://mcp.philidor.io/api/mcp"
     }
-  ],
-  "categories": ["finance", "data"],
-  "tags": ["defi", "vaults", "risk", "yield", "ethereum", "crypto", "morpho", "aave", "yearn"],
-  "tools": [
-    { "name": "search_vaults", "description": "Search and filter DeFi vaults by chain, protocol, asset, risk tier, TVL" },
-    { "name": "get_vault", "description": "Get full vault details including risk vectors, snapshots, events" },
-    { "name": "get_vault_risk_breakdown", "description": "Detailed risk vector analysis with sub-metrics" },
-    { "name": "compare_vaults", "description": "Side-by-side comparison of 2-3 vaults" },
-    { "name": "find_safest_vaults", "description": "Find top audited vaults sorted by risk score" },
-    { "name": "get_protocol_info", "description": "Protocol details including security history and auditors" },
-    { "name": "get_curator_info", "description": "Curator track record and managed vault performance" },
-    { "name": "get_market_overview", "description": "Platform-wide DeFi vault market statistics" },
-    { "name": "explain_risk_score", "description": "Explain what a risk score means and how it's calculated" }
-  ],
-  "remote": {
-    "transport_type": "streamable-http",
-    "url": "https://mcp.philidor.io/api/mcp"
-  }
+  ]
 }

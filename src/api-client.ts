@@ -19,11 +19,12 @@ export async function apiGet<T = any>(path: string): Promise<T> {
 }
 
 export function buildQueryString(
-  params: Record<string, string | number | boolean | undefined>
+  params: Record<string, string | number | boolean | undefined | null>
 ): string {
   const sp = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== false) sp.set(key, String(value));
+    if (value === undefined || value === null) continue;
+    sp.set(key, String(value));
   }
   const str = sp.toString();
   return str ? `?${str}` : '';

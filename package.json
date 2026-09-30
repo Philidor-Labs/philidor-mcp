@@ -32,6 +32,7 @@
     "start": "tsx src/stdio.ts",
     "dev": "tsx watch src/stdio.ts",
     "build": "tsc --noEmit",
+    "test": "tsx src/smoke.test.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
