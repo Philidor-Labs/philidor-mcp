@@ -116,7 +116,7 @@ npm start
 
 ## Tools
 
-10 tools for vault discovery, risk analysis, and protocol research.
+14 tools for vault discovery, risk analysis, lending markets, loop venue checks, and protocol research.
 
 ### `search_vaults`
 
@@ -125,12 +125,14 @@ Search and filter DeFi vaults by chain, protocol, asset, risk tier, TVL, and mor
 | Parameter | Type | Description |
 |---|---|---|
 | `query` | string | Search by vault name, symbol, asset, protocol, or curator |
-| `chain` | string | Filter by chain (Ethereum, Base, Arbitrum, ...) |
-| `protocol` | string | Filter by protocol ID (morpho, aave-v3, yearn-v3, beefy, spark) |
+| `chain` | string | Filter by chain name or slug (Ethereum, Base, Solana, ...) |
+| `protocol` | string | Protocol ID: `aave`, `morpho`, `spark`, `compound`, `yearn`, `beefy`, `uniswap`, `nest`, `maple`, `kamino` |
+| `protocolVersion` | string | Generation filter (`v3`, `v4`, ...); use with `protocol=aave` for Aave V4 |
 | `asset` | string | Filter by asset symbol (USDC, WETH, ...) |
 | `riskTier` | string | Filter by risk tier: Prime, Core, or Edge |
 | `minTvl` | number | Minimum TVL in USD |
-| `sortBy` | string | Sort field: tvl_usd, apr_net, name |
+| `depositable` | boolean | Filter by current deposit capacity |
+| `sortBy` | string | Sort field: tvl_usd, apr_net, name, last_synced_at |
 | `sortOrder` | string | Sort order: asc or desc |
 | `limit` | number | Max results (default 10, max 50) |
 
@@ -140,18 +142,57 @@ Get detailed information about a specific vault including risk breakdown, recent
 
 | Parameter | Type | Description |
 |---|---|---|
-| `id` | string | Vault ID (e.g. `morpho-ethereum-0x...`) |
-| `network` | string | Network slug (ethereum, base, arbitrum) |
-| `address` | string | Vault contract address (0x...) |
+| `id` | string | Vault ID (e.g. `morpho-1-0x...`) |
+| `network` | string | Network slug (ethereum, base, arbitrum, solana) |
+| `address` | string | Vault address (`0x` hex or Solana base58) |
 
 ### `get_vault_risk_breakdown`
 
-Detailed breakdown of a vault's three risk vectors with sub-metrics: asset quality, platform code maturity, and governance controls. Returns dimension-level scores, caps, hard-fail flags, and overrides.
+Detailed breakdown of a vault's four risk vectors: Asset Composition, Platform and Strategy, Control and Governance, and History.
 
 | Parameter | Type | Description |
 |---|---|---|
 | `network` | string | Network slug |
-| `address` | string | Vault contract address |
+| `address` | string | Vault address |
+
+### `list_markets`
+
+List lending markets (Aave/Spark pools, Aave V4 spokes, Compound Comet, Morpho Blue pairs, Kamino K-Lend). Aave V4 spokes that share a liquidity hub are grouped under composed hub parents (e.g. `aave-v4-1-hub-core`).
+
+| Parameter | Type | Description |
+|---|---|---|
+| `protocol` | string | `aave`, `spark`, `compound`, `morpho`, `kamino` |
+| `version` | string | `v3`, `v4`, or `klend` |
+| `chain` | number/string | Chain id or slug |
+| `limit` | number | 1–100 (default 20) |
+| `sortBy` | string | `total_supplied_usd`, `total_borrowed_usd`, `reserve_count`, `name` |
+
+### `get_market`
+
+One market with every reserve (supplied, supply APR, borrowed, borrow APR, utilization, tier). Accepts spoke ids and composed hub ids.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `marketId` | string | Market id from `list_markets` |
+
+### `get_market_events`
+
+Published risk events for one lending market. Hub ids union spoke feeds.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `marketId` | string | Market id from `list_markets` |
+| `limit` | number | 1–100 (default 20) |
+
+### `check_loop_venue`
+
+Underwrite a collateral/debt loop on one market: score, tier, utilization, borrow APR, deposit status, and recent incidents for both legs. Does not compute health factor and does not prepare transactions.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `marketId` | string | Market id from `list_markets` |
+| `collateral` | string | Collateral asset symbol |
+| `debt` | string | Debt asset symbol |
 
 ### `compare_vaults`
 
@@ -163,7 +204,7 @@ Side-by-side comparison of 2&ndash;3 vaults on TVL, APR, risk score, risk tier, 
 
 ### `find_safest_vaults`
 
-Find the top 10 audited, high-confidence vaults sorted by risk score.
+Find the top 10 audited vaults sorted by Philidor risk score (higher = lower assessed risk; not a safety guarantee).
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -177,7 +218,7 @@ Protocol details including TVL, vault count, versions, auditors, bug bounties, a
 
 | Parameter | Type | Description |
 |---|---|---|
-| `protocolId` | string | Protocol ID (morpho, aave-v3, yearn-v3, beefy, spark) |
+| `protocolId` | string | Protocol ID (`aave`, `morpho`, `spark`, `compound`, `yearn`, `beefy`, `uniswap`, `nest`, `maple`, `kamino`) |
 
 ### `get_curator_info`
 
@@ -220,6 +261,7 @@ List all vaults that had a recent critical incident (last 365 days). Sorted by T
 | `vault_due_diligence` | Comprehensive due diligence report for a vault |
 | `portfolio_risk_assessment` | Portfolio-level risk analysis across positions |
 | `defi_yield_comparison` | Yield comparison with risk-adjusted analysis |
+| `review_loop_venue` | Loop venue review, then hand off to a protocol MCP |
 
 ---
 
@@ -301,8 +343,8 @@ Exit window for users:
 │  Claude / Cursor  │────▶│  Philidor MCP   │────▶│ Philidor API │
 │  Windsurf / etc.  │◀────│  Server         │◀────│              │
 └──────────────────┘     └─────────────────┘     └──────┬───────┘
-                          10 tools, 3 resources,         │
-                          3 prompts                      │
+                          14 tools, 3 resources,         │
+                          4 prompts                      │
                                                    ┌────▼────┐
                                                    │ On-chain │
                                                    │  data    │
@@ -326,7 +368,7 @@ The plugin points at the hosted server, which is ahead of the stdio server in th
 https://mcp.philidor.io/api/mcp
 ```
 
-Transport is Streamable HTTP. A live `initialize` plus `tools/list` against that URL returns 14 tools, 3 resources (`philidor://methodology`, `philidor://supported-chains`, `philidor://supported-protocols`), and 4 prompts (`vault_due_diligence`, `portfolio_risk_assessment`, `defi_yield_comparison`, `review_loop_venue`). `src/server.ts` in this repository still registers 9 tools. The hosted server also exposes `list_markets`, `get_market`, `get_market_events`, `check_loop_venue`, and `list_vaults_with_incidents`. The Tools section above matches the older README catalog, not that live list. Plugin skills follow the hosted server.
+Transport is Streamable HTTP. A live `initialize` plus `tools/list` against that URL returns 14 tools, 3 resources (`philidor://methodology`, `philidor://supported-chains`, `philidor://supported-protocols`), and 4 prompts (`vault_due_diligence`, `portfolio_risk_assessment`, `defi_yield_comparison`, `review_loop_venue`). `src/server.ts` registers the same 14 tools.
 
 | Piece | Path |
 |---|---|
@@ -406,7 +448,7 @@ This gives your agent full knowledge of all tools, resources, prompts, recommend
 
 ## Supported Protocols
 
-Morpho, Aave v3, Yearn v3, Beefy, Spark &mdash; with more being added regularly.
+Morpho, Aave (v3/v4), Spark, Compound, Yearn, Beefy, Uniswap, Nest, Maple, Kamino &mdash; with more being added regularly.
 
 See the full list at [app.philidor.io](https://app.philidor.io).
 

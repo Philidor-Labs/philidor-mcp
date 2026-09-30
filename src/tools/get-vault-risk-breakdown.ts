@@ -5,10 +5,18 @@ import { apiGet } from '../api-client';
 export function registerGetVaultRiskBreakdown(server: McpServer) {
   server.tool(
     'get_vault_risk_breakdown',
-    "Get a detailed breakdown of a vault's risk vectors: Asset Composition, Platform Code, and Governance scores with sub-metrics.",
+    "Get a detailed breakdown of a vault's risk vectors: Asset Composition, Platform and Strategy, Control and Governance, and History scores with sub-metrics.",
     {
-      network: z.string().describe('Network slug (e.g. ethereum, base, arbitrum)'),
-      address: z.string().describe('Vault contract address (0x...)'),
+      network: z
+        .string()
+        .describe(
+          'Network slug from the chain registry (e.g. ethereum, base, arbitrum, solana). /v1/chains lists slugs for chains with active vaults.'
+        ),
+      address: z
+        .string()
+        .describe(
+          "Vault address in the chain's namespace: 0x-hex on EVM chains, base58 (case-sensitive) on Solana"
+        ),
     },
     async (params) => {
       const result = await apiGet<{ data: any }>(`/v1/vault/${params.network}/${params.address}`);
@@ -27,8 +35,7 @@ export function registerGetVaultRiskBreakdown(server: McpServer) {
         return { content: [{ type: 'text' as const, text: sections.join('\n') }] };
       }
 
-      // Asset Composition
-      sections.push('\n### Vector 1: Asset Composition (40% weight)');
+      sections.push('\n### Vector 1: Asset Composition (30% weight)');
       if (rv.asset) {
         sections.push(`**Score:** ${round(rv.asset.score)}/10`);
         if (rv.asset.details?.breakdown?.length) {
@@ -42,8 +49,7 @@ export function registerGetVaultRiskBreakdown(server: McpServer) {
         sections.push('No asset composition data.');
       }
 
-      // Platform Code
-      sections.push('\n### Vector 2: Platform Code (40% weight)');
+      sections.push('\n### Vector 2: Platform and Strategy (30% weight)');
       if (rv.platform) {
         sections.push(`**Score:** ${round(rv.platform.score)}/10`);
         if (rv.platform.details) {
@@ -69,11 +75,10 @@ export function registerGetVaultRiskBreakdown(server: McpServer) {
             );
         }
       } else {
-        sections.push('No platform code data.');
+        sections.push('No platform and strategy data.');
       }
 
-      // Governance
-      sections.push('\n### Vector 3: Governance (20% weight)');
+      sections.push('\n### Vector 3: Control and Governance (20% weight)');
       if (rv.control) {
         sections.push(`**Score:** ${round(rv.control.score)}/10`);
         if (rv.control.details) {
@@ -90,7 +95,20 @@ export function registerGetVaultRiskBreakdown(server: McpServer) {
           if (d.governanceType) sections.push(`- Governance Type: ${d.governanceType}`);
         }
       } else {
-        sections.push('No governance data.');
+        sections.push('No control and governance data.');
+      }
+
+      sections.push('\n### Vector 4: History (20% weight)');
+      if (rv.history) {
+        sections.push(`**Score:** ${round(rv.history.score)}/10`);
+        if (rv.history.details) {
+          const d = rv.history.details;
+          for (const [key, value] of Object.entries(d)) {
+            sections.push(`- ${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`);
+          }
+        }
+      } else {
+        sections.push('No history data.');
       }
 
       return { content: [{ type: 'text' as const, text: sections.join('\n') }] };
