@@ -15,7 +15,7 @@ Search 700+ DeFi vaults across Morpho, Aave, Yearn, Beefy, and Spark. Compare ri
 
 **No API key required. No installation needed.**
 
-[Quick Start](#quick-start) &bull; [Tools](#tools) &bull; [Example Prompts](#example-prompts) &bull; [Risk Framework](#risk-scoring) &bull; [Agent Skill](#agent-skill)
+[Quick Start](#quick-start) &bull; [Cursor Plugin](#cursor-marketplace-plugin) &bull; [Tools](#tools) &bull; [Example Prompts](#example-prompts) &bull; [Risk Framework](#risk-scoring) &bull; [Agent Skill](#agent-skill)
 
 </div>
 
@@ -316,6 +316,75 @@ Exit window for users:
 
 ---
 
+## Cursor Marketplace Plugin
+
+This repository packages a Cursor plugin that connects the agent to the hosted Philidor MCP server and loads five workflow skills. The plugin does not embed an API key. Philidor stays read-only: it scores vaults and lending venues, and it does not compute a health factor or prepare a transaction.
+
+The plugin points at the hosted server, which is ahead of the stdio server in this repo:
+
+```
+https://mcp.philidor.io/api/mcp
+```
+
+Transport is Streamable HTTP. A live `initialize` plus `tools/list` against that URL returns 14 tools, 3 resources (`philidor://methodology`, `philidor://supported-chains`, `philidor://supported-protocols`), and 4 prompts (`vault_due_diligence`, `portfolio_risk_assessment`, `defi_yield_comparison`, `review_loop_venue`). `src/server.ts` in this repository still registers 9 tools. The hosted server also exposes `list_markets`, `get_market`, `get_market_events`, `check_loop_venue`, and `list_vaults_with_incidents`. The Tools section above matches the older README catalog, not that live list. Plugin skills follow the hosted server.
+
+| Piece | Path |
+|---|---|
+| Manifest | `.cursor-plugin/plugin.json` |
+| Marketplace index | `.cursor-plugin/marketplace.json` (one plugin, source `.`) |
+| MCP connector | `mcp.json` |
+| Logo | `assets/logo.svg` (primary pawn mark from [philidor.io/brand-assets](https://philidor.io/brand-assets)) |
+| Skills | `skills/vault-due-diligence`, `skills/pre-deposit-safety-check`, `skills/risk-adjusted-yield`, `skills/market-incident-monitoring`, `skills/philidor-api-handoff` |
+
+Product page: [philidor.io/mcp](https://philidor.io/mcp). Docs: [MCP server](https://docs.philidor.io/docs/mcp), [quickstart](https://docs.philidor.io/docs/mcp/quickstart), [tools](https://docs.philidor.io/docs/mcp/tools), [resources](https://docs.philidor.io/docs/mcp/resources), [prompts](https://docs.philidor.io/docs/mcp/prompts).
+
+### Install
+
+After the plugin is listed, open **Customize** in Cursor, find **Philidor**, and choose **Install** (project or user scope). That loads the skills and the hosted MCP server together.
+
+Until then, connect the same server without the plugin by adding this to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "philidor": {
+      "url": "https://mcp.philidor.io/api/mcp"
+    }
+  }
+}
+```
+
+To try the plugin from a local checkout, copy this repo to `~/.cursor/plugins/local/philidor` (the folder must contain `.cursor-plugin/plugin.json`), then run **Developer: Reload Window** and confirm the skills and MCP server under Customize. Local plugin imports have to be allowed. A marketplace plugin with the same name takes precedence over the local copy.
+
+### Example prompts
+
+- "Run due diligence on the Gauntlet USDC vault on Ethereum."
+- "Which Prime USDC vaults on Ethereum still accept deposits, and how do their scores compare to APR?"
+- "Check looping weETH against USDC on Aave V4 Ethereum Main before I borrow."
+- "List the largest Aave V4 markets by supplied value and any recent events on the one I pick."
+- "Which vaults had a critical incident in the last year?"
+- "I need basket constituents and the oracle freshness feed. Is that on the free MCP or the API?"
+
+Skills tell the agent to copy vault ids, network slugs, addresses, and market ids from tool results, and not to invent risk numbers. Loop checks call `check_loop_venue`, then stop. Health factor and unsigned transactions belong to the protocol MCP (Aave is `https://mcp.aave.com`). Baskets, oracle vectors, enriched assets, the event stream, and Risk Graph look-through are outside the free MCP. The `philidor-api-handoff` skill sends those questions to [API Access and Plans](https://docs.philidor.io/docs/api-reference/access) and [pricing](https://philidor.io/pricing) without quoting a price.
+
+### Submission checklist
+
+Do not submit from this fork until a reviewer accepts the pull request. Listing is a manual review at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). The repository must be public. Cursor reviews the open-source tree and each later update.
+
+- [ ] `.cursor-plugin/plugin.json` parses and matches the [plugin schema](https://cursor.com/docs/reference/plugins) (`name` `philidor`, lowercase kebab-case)
+- [ ] `description` states that the plugin is read-only vault and market risk analytics
+- [ ] `mcp.json` is the only MCP connector and has no auth header
+- [ ] Each skill directory has a `SKILL.md` whose `name` matches the folder and whose `description` says when to use it
+- [ ] `assets/logo.svg` is committed and `logo` is the relative path `assets/logo.svg`
+- [ ] Manifest paths are relative and exist (`skills/...`, `./mcp.json`). No `..`, no absolute paths
+- [ ] No `${VAR}` placeholders, so `variables` stays unset
+- [ ] README (this section) documents install and example prompts
+- [ ] Live check: `initialize` and `tools/list` against `https://mcp.philidor.io/api/mcp` still succeed
+- [ ] Tried locally from `~/.cursor/plugins/local/philidor` (Customize shows 5 skills and the Philidor MCP server)
+- [ ] Submit the public GitHub URL at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). This repo is a single plugin indexed by `.cursor-plugin/marketplace.json` with `source` `"."`
+
+---
+
 ## Agent Skill
 
 Install the Philidor MCP skill into your coding agent via [skills.sh](https://skills.sh):
@@ -362,6 +431,8 @@ PHILIDOR_API_URL=http://localhost:3003 npm start
 
 ## Links
 
+- [Philidor MCP landing](https://philidor.io/mcp) &mdash; hosted server overview
+- [MCP docs](https://docs.philidor.io/docs/mcp) &mdash; tools, resources, and prompts
 - [Philidor Analytics](https://app.philidor.io) &mdash; explore vaults and risk scores
 - [Philidor CLI](https://github.com/Philidor-Labs/philidor-cli) &mdash; terminal-based vault intelligence
 - [API Documentation](https://api.philidor.io/v1/docs) &mdash; OpenAPI/Swagger docs

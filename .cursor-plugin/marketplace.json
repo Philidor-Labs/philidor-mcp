@@ -1,0 +1,16 @@
+{
+  "name": "philidor",
+  "owner": {
+    "name": "Philidor"
+  },
+  "metadata": {
+    "description": "Philidor DeFi and RWA vault risk analytics for Cursor."
+  },
+  "plugins": [
+    {
+      "name": "philidor",
+      "source": ".",
+      "description": "Read-only DeFi and RWA vault risk analytics from Philidor. Scores, tiers, lending markets, incidents, and loop-venue checks through the hosted MCP server. No API key."
+    }
+  ]
+}

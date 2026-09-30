@@ -1,0 +1,34 @@
+{
+  "name": "philidor",
+  "displayName": "Philidor",
+  "version": "0.1.0",
+  "description": "Read-only DeFi and RWA vault risk analytics from Philidor. Scores, tiers, lending markets, incidents, and loop-venue checks through the hosted MCP server. No API key.",
+  "author": {
+    "name": "Philidor"
+  },
+  "homepage": "https://philidor.io",
+  "repository": "https://github.com/Philidor-Labs/philidor-mcp",
+  "license": "MIT",
+  "keywords": [
+    "defi",
+    "vault risk",
+    "morpho",
+    "aave",
+    "euler",
+    "rwa",
+    "yield",
+    "risk scoring",
+    "mcp"
+  ],
+  "category": "finance_and_legal",
+  "tags": ["finance", "defi", "rwa"],
+  "logo": "assets/logo.svg",
+  "skills": [
+    "skills/vault-due-diligence",
+    "skills/pre-deposit-safety-check",
+    "skills/risk-adjusted-yield",
+    "skills/market-incident-monitoring",
+    "skills/philidor-api-handoff"
+  ],
+  "mcpServers": "./mcp.json"
+}
