@@ -21,6 +21,12 @@ Search 700+ DeFi vaults across Morpho, Aave, Yearn, Beefy, and Spark. Compare ri
 
 ---
 
+## Key material
+
+**Philidor never accepts keys.** Never send private keys, session keys, seeds, or mnemonics to any Philidor API or MCP input. Inputs carrying key material receive a structured refusal before tool, prompt, or resource handlers run. The API and MCP return data only; they do not build, sign, or broadcast transactions. Keys and execution stay in the client-side SDK.
+
+A 32-byte pool identifier and a private key can have the same shape. Documented identifier fields still accept exact identifiers; never paste a key into them.
+
 ## Why Philidor?
 
 Most DeFi data tools give you raw numbers. Philidor gives your AI agent **institutional-grade risk intelligence**.
