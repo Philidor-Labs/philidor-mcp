@@ -1,4 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { guardTransport } from './lib/key-guard';
+import { installSecretScrubbing } from './lib/secret-scrub';
 
 // Tools
 import { registerSearchVaults } from './tools/search-vaults';
@@ -45,10 +47,14 @@ export const EXPECTED_TOOL_NAMES = [
 ] as const;
 
 export function createServer() {
+  installSecretScrubbing();
   const server = new McpServer({
     name: 'philidor-defi-vaults',
     version: '1.0.0',
-  });
+  }, { instructions: 'Philidor never accepts keys. Do not send private keys, session keys, seeds, or mnemonics. This server returns data only; it does not build, sign, or broadcast transactions. Keys and execution stay in the client-side SDK.' });
+
+  const connect = server.connect.bind(server);
+  server.connect = (transport) => connect(guardTransport(transport));
 
   // Register tools (order matches hosted tools/list)
   registerSearchVaults(server);
