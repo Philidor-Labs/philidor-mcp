@@ -122,7 +122,23 @@ npm start
 
 ## Tools
 
-14 tools for vault discovery, risk analysis, lending markets, loop venue checks, and protocol research.
+15 standalone tools for vault discovery, risk analysis, lending markets, loop venue checks, policy attestations, and protocol research.
+
+### `check_policy`
+
+Check positions against **your own** limits and constraints. Returns the API's compliance attestation: `compliance`, `violations`, `policy_hash`, `findings`, and `snapshotId`. With `issue: true`, an issued attestation also includes `attestation_id`, `signerAddress`, and `verification_url` (`GET /v1/graph/attestation/{id}/verify`). No risk figures are recalculated. Missing, malformed, or partial responses produce an error. The legacy verdict appears only as `deprecated_verdict`; use `compliance`.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `positions` | array | 1–100 `{ vaultKey, amountUsd }` rows; key is `{chainId}:{lowercase 0x address}`, amount is finite and positive. EVM graph coverage only. |
+| `limits` | object | Caller-defined fractions in `(0, 1]`: `maxSharePerCurator`, `maxSharePerProtocol`, `maxSharePerChain`, `maxSharePerAsset`, `maxSharePerOracle`, `maxSharePerOracleVendor`, `maxSharePerCluster`, `maxSharePerBridge`, `maxSharePerSignerSet`. Required; `{}` sets no caps. |
+| `constraints` | object | Optional `minTier` (`Prime`, `Core`, `Edge`), `allowlist`/`blacklist` (up to 1000 vault keys each), `requireDepositStatus`/`requireWithdrawStatus` (`open`), `maxFreshnessSeconds` (integer 0–31622400). Blacklist wins. |
+| `issue` | boolean | Optional, defaults to false. Ask the API to issue a compliance attestation. |
+| `agentId` | string | Optional caller reference, 1–200 characters. |
+
+For local stdio/Docker, set `PHILIDOR_API_KEY` in the server process environment to your Philidor **API credential**. Keep it out of tool arguments, chat, and source control. This is not a wallet key. Without an eligible key the tool returns a structured refusal with the API's required plan, x402 price (when available), and upgrade link. It does not pay automatically. The hosted plugin uses its own documented client authentication.
+
+No Philidor policy is preselected. This reports conformity with your policy; it does not recommend a vault. Philidor does not prepare transactions and never accepts wallet keys. Execution stays in the client-side SDK.
 
 ### `search_vaults`
 
@@ -349,7 +365,7 @@ Exit window for users:
 │  Claude / Cursor  │────▶│  Philidor MCP   │────▶│ Philidor API │
 │  Windsurf / etc.  │◀────│  Server         │◀────│              │
 └──────────────────┘     └─────────────────┘     └──────┬───────┘
-                          14 tools, 3 resources,         │
+                          15 tools, 3 resources,         │
                           4 prompts                      │
                                                    ┌────▼────┐
                                                    │ On-chain │
@@ -358,7 +374,7 @@ Exit window for users:
 ```
 
 - **Transport**: Streamable HTTP (remote) or stdio (local/Docker)
-- **API**: Calls the [Philidor Public API](https://api.philidor.io/v1/docs) &mdash; no API key needed
+- **API**: Calls the [Philidor Public API](https://api.philidor.io/v1/docs) &mdash; public analytics need no API key; policy attestations require an eligible API plan
 - **Stateless**: Fresh server instance per request, no session state
 - **Data**: 700+ vaults across Ethereum, Base, Arbitrum, Polygon, Optimism, and Avalanche
 
@@ -374,7 +390,7 @@ The plugin points at the hosted server, which is ahead of the stdio server in th
 https://mcp.philidor.io/api/mcp
 ```
 
-Transport is Streamable HTTP. A live `initialize` plus `tools/list` against that URL returns 14 tools, 3 resources (`philidor://methodology`, `philidor://supported-chains`, `philidor://supported-protocols`), and 4 prompts (`vault_due_diligence`, `portfolio_risk_assessment`, `defi_yield_comparison`, `review_loop_venue`). `src/server.ts` registers the same 14 tools.
+Transport is Streamable HTTP. The hosted server has additional tools beyond this standalone client; use `tools/list` to discover the current surface. `src/server.ts` registers 15 standalone tools, 3 resources (`philidor://methodology`, `philidor://supported-chains`, `philidor://supported-protocols`), and 4 prompts (`vault_due_diligence`, `portfolio_risk_assessment`, `defi_yield_comparison`, `review_loop_venue`).
 
 | Piece | Path |
 |---|---|
