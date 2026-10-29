@@ -32,11 +32,11 @@
     "start": "tsx src/stdio.ts",
     "dev": "tsx watch src/stdio.ts",
     "build": "tsc --noEmit",
-    "test": "tsx src/smoke.test.ts && tsx src/key-guard.test.ts",
+    "test": "tsx src/smoke.test.ts && tsx src/key-guard.test.ts && tsx src/check-policy.test.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "tsx": "^4.21.0",
     "zod": "^3.24.0"
   },

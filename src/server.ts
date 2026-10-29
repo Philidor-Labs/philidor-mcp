@@ -3,6 +3,7 @@ import { guardTransport } from './lib/key-guard';
 import { installSecretScrubbing } from './lib/secret-scrub';
 
 // Tools
+import { registerCheckPolicy } from './tools/check-policy';
 import { registerSearchVaults } from './tools/search-vaults';
 import { registerGetVault } from './tools/get-vault';
 import { registerGetVaultRiskBreakdown } from './tools/get-vault-risk-breakdown';
@@ -44,6 +45,7 @@ export const EXPECTED_TOOL_NAMES = [
   'get_market_overview',
   'explain_risk_score',
   'list_vaults_with_incidents',
+  'check_policy',
 ] as const;
 
 export function createServer() {
@@ -51,7 +53,7 @@ export function createServer() {
   const server = new McpServer({
     name: 'philidor-defi-vaults',
     version: '1.0.0',
-  }, { instructions: 'Philidor never accepts keys. Do not send private keys, session keys, seeds, or mnemonics. This server returns data only; it does not build, sign, or broadcast transactions. Keys and execution stay in the client-side SDK.' });
+  }, { instructions: 'Philidor never accepts keys. Do not send private keys, session keys, seeds, or mnemonics. Use check_policy for a compliance attestation against positions, limits and constraints supplied by the caller; no Philidor policy is preselected. This server returns data and attestations only; it does not build, sign, or broadcast transactions. Keys and execution stay in the client-side SDK.' });
 
   const connect = server.connect.bind(server);
   server.connect = (transport) => connect(guardTransport(transport));
@@ -71,6 +73,7 @@ export function createServer() {
   registerGetMarketOverview(server);
   registerExplainRiskScore(server);
   registerListVaultsWithIncidents(server);
+  registerCheckPolicy(server);
 
   // Register resources
   registerMethodologyResource(server);

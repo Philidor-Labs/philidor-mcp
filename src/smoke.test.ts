@@ -21,7 +21,7 @@ function registeredResourceNames(server: ReturnType<typeof createServer>): strin
 const server = createServer();
 const tools = registeredToolNames(server);
 assert.deepEqual(tools, [...EXPECTED_TOOL_NAMES]);
-assert.equal(tools.length, 14);
+assert.equal(tools.length, 15);
 
 const prompts = registeredPromptNames(server);
 assert.deepEqual(prompts.sort(), [
